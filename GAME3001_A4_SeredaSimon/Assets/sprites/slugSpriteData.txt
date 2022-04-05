@@ -1,0 +1,15 @@
+MoveToPlayer-0 0 0 32 32
+MoveToPlayer-1 32 0 32 32
+Patrol-0 96 0 32 32
+Patrol-1 128 0 32 32
+TakeDmg-0 64 32 32 32
+TakeDmg-1 96 32 32 32
+TakeDmg-2 128 32 32 32
+Atk-0 64 0 32 32
+Atk-1 96 0 32 32
+Atk-2 96 32 32 32
+Die-0 160 32 32 32
+Die-1 32 32 32 32
+Die-2 192 32 32 32
+Idle-0 0 0 32 32
+Idle-1 96 0 32 32
