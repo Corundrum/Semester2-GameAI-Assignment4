@@ -155,12 +155,17 @@ void CloseCombatEnemy::draw()
 		if (!isFacingLeft)
 		{
 			TextureManager::Instance().playAnimation("slugSpriteSheet", getAnimation("attack"),
-				x, y, 0.12f, 0, 255, this, true);
+				x, y, 0.26f, 0, 255, this, true);
 		}
 		else
 		{
 			TextureManager::Instance().playAnimation("slugSpriteSheet", getAnimation("attack"),
-				x, y, 0.12f, 0, 255, this, true, SDL_FLIP_HORIZONTAL);
+				x, y, 0.26f, 0, 255, this, true, SDL_FLIP_HORIZONTAL);
+		}
+		if (getAnimation("attack").current_frame == 5)
+		{
+			getAnimation("attack").current_frame = 0;
+			setActionState(NO_ACTION);
 		}
 		break;
 	default:
@@ -254,7 +259,7 @@ void CloseCombatEnemy::update()
 		}
 		else
 		{
-			if (m_tree->getCloseCombatNode()->getWithinCombatRange())
+			if (m_tree->getCloseCombatNode()->getWithinCombatRange() && getActionState() != ATTACK)
 			{
 				m_tree->getCloseCombatNode()->setWithinCombatRange(false);
 			}
@@ -395,7 +400,10 @@ void CloseCombatEnemy::m_buildAnimations()
 	AttackAnimation.name = "attack";
 	AttackAnimation.frames.push_back(getSpriteSheet()->getFrame("Atk-0"));
 	AttackAnimation.frames.push_back(getSpriteSheet()->getFrame("Atk-1"));
+	AttackAnimation.frames.push_back(getSpriteSheet()->getFrame("Atk-0"));
+	AttackAnimation.frames.push_back(getSpriteSheet()->getFrame("Atk-1"));
 	AttackAnimation.frames.push_back(getSpriteSheet()->getFrame("Atk-2"));
+	AttackAnimation.frames.push_back(getSpriteSheet()->getFrame("Atk-0"));
 	setAnimation(AttackAnimation);
 
 	Animation TakeDamageAnimation = Animation();
