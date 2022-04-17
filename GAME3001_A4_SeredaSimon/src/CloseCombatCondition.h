@@ -11,6 +11,8 @@ public:
 
 	//get and set
 	void setWithinCombatRange(bool state);
+	bool getWithinCombatRange() { return m_isWithinCombatRange; }
+
 	virtual bool Condition() override;
 private:
 	bool m_isWithinCombatRange;

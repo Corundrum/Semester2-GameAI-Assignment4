@@ -23,14 +23,18 @@ public:
 	void takeDamage() override;
 	void patrol() override;
 	void moveToPlayer() override;
+	void attack() override;
+	void moveToLOS() override;
 private:
-	bool isWithinRadius = 0;
 
 	float walkTimer = 1;
 
 	// private movement variables
 	void m_buildAnimations();
 	bool isFacingLeft = 0;
+
+	//decision making
+	void m_buildTree();
 };
 
 

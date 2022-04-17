@@ -11,6 +11,7 @@ public:
 
 	//get and set
 	void setIsWithinRadius(bool state);
+	bool getIsWithinRadius() { return m_isWithinRadius; }
 
 	virtual bool Condition() override;
 private:

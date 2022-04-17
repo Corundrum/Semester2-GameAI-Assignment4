@@ -65,7 +65,7 @@ protected:
 
 	//decision Tree
 	DecisionTree* m_tree;
-	void m_buildTree();
+	virtual void m_buildTree() = 0;
 };
 
 

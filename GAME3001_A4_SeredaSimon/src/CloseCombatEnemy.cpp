@@ -151,6 +151,18 @@ void CloseCombatEnemy::draw()
 				x, y, 0.12f, 0, 255, this, true, SDL_FLIP_HORIZONTAL);
 		}
 		break;
+	case ATTACK:
+		if (!isFacingLeft)
+		{
+			TextureManager::Instance().playAnimation("slugSpriteSheet", getAnimation("attack"),
+				x, y, 0.12f, 0, 255, this, true);
+		}
+		else
+		{
+			TextureManager::Instance().playAnimation("slugSpriteSheet", getAnimation("attack"),
+				x, y, 0.12f, 0, 255, this, true, SDL_FLIP_HORIZONTAL);
+		}
+		break;
 	default:
 		break;
 	}
@@ -160,7 +172,7 @@ void CloseCombatEnemy::draw()
 	glm::vec4 circleColour;
 
 	// draw LOS
-	if (isWithinRadius)
+	if (m_tree->getRadiusNode()->getIsWithinRadius())
 	{
 		circleColour = green;
 	}
@@ -216,26 +228,46 @@ void CloseCombatEnemy::update()
 			}
 		}
 
-		if (Util::distance(getTransform()->position, glm::vec2(Player::s_pPlayerObj->getTransform()->position.x + 24, Player::s_pPlayerObj->getTransform()->position.y + 24)) < 250)
+		//if within distance
+		if (Util::distance(getTransform()->position, glm::vec2(Player::s_pPlayerObj->getTransform()->position.x + 12, Player::s_pPlayerObj->getTransform()->position.y + 28)) < 250)
 		{
-			if (!isWithinRadius)
-			{
-				isWithinRadius = true;
+			if (!m_tree->getRadiusNode()->getIsWithinRadius())
+			{	
+				m_tree->getRadiusNode()->setIsWithinRadius(true);
 			}
 		}
 		else
 		{
-			if (isWithinRadius)
+			if (m_tree->getRadiusNode()->getIsWithinRadius())
 			{
-				isWithinRadius = false;
+				m_tree->getRadiusNode()->setIsWithinRadius(false);
 			}
 		}
 
+		//if within combat distance
+		if (Util::distance(getTransform()->position, glm::vec2(Player::s_pPlayerObj->getTransform()->position.x + 12, Player::s_pPlayerObj->getTransform()->position.y + 28)) < 30)
+		{
+			if (!m_tree->getCloseCombatNode()->getWithinCombatRange())
+			{
+				m_tree->getCloseCombatNode()->setWithinCombatRange(true);
+			}
+		}
+		else
+		{
+			if (m_tree->getCloseCombatNode()->getWithinCombatRange())
+			{
+				m_tree->getCloseCombatNode()->setWithinCombatRange(false);
+			}
+		}
+
+
+		//set dead
 		if (getHealth() <= 0)
 		{
 			m_tree->getDeathNode()->setIsDead(true);
 		}
 
+		//if moving, use timer for sound
 		if (walkTimer >= 1.5 && (getActionState() == PATROL || getActionState() == MOVE_TO_PLAYER))
 		{
 			walkTimer = 0;
@@ -320,6 +352,25 @@ void CloseCombatEnemy::moveToPlayer()
 	m_move();
 }
 
+void CloseCombatEnemy::attack()
+{
+	if(getActionState() != ATTACK)
+	{
+		//initialize the action
+		setActionState(ATTACK);
+	}
+}
+
+void CloseCombatEnemy::moveToLOS()
+{
+	if (getActionState() != MOVE_TO_LOS)
+	{
+		//initialize the action
+		setActionState(MOVE_TO_LOS);
+	}
+
+}
+
 void CloseCombatEnemy::m_buildAnimations()
 {
 	Animation moveToPlayerAnimation = Animation();
@@ -360,4 +411,64 @@ void CloseCombatEnemy::m_buildAnimations()
 	DieAnimation.frames.push_back(getSpriteSheet()->getFrame("Die-1"));
 	DieAnimation.frames.push_back(getSpriteSheet()->getFrame("Die-2"));
 	setAnimation(DieAnimation);
+}
+
+void CloseCombatEnemy::m_buildTree()
+{
+	// Create and add root node.
+	m_tree->setDeathNode(new DeathCondition());
+	m_tree->getTree().push_back(m_tree->getDeathNode());
+
+
+	TreeNode* deathNode = m_tree->addNode(m_tree->getDeathNode(), new DeathAction(), RIGHT_TREE_NODE);
+	dynamic_cast<ActionNode*>(deathNode)->setAgent(this);
+	m_tree->getTree().push_back(deathNode);
+
+	m_tree->setTakeDamageNode(new TakeDamageCondition());
+	m_tree->addNode(m_tree->getDeathNode(), m_tree->getTakeDamageNode(), LEFT_TREE_NODE);
+	m_tree->getTree().push_back(m_tree->getTakeDamageNode());
+
+
+	TreeNode* takeDamageNode = m_tree->addNode(m_tree->getTakeDamageNode(), new TakeDamageAction(), RIGHT_TREE_NODE);
+	dynamic_cast<ActionNode*>(takeDamageNode)->setAgent(this);
+	m_tree->getTree().push_back(takeDamageNode);
+
+	m_tree->setIdleNode(new IdleCondition());
+	m_tree->addNode(m_tree->getTakeDamageNode(), m_tree->getIdleNode(), LEFT_TREE_NODE);
+	m_tree->getTree().push_back(m_tree->getIdleNode());
+
+
+	TreeNode* idleNode = m_tree->addNode(m_tree->getIdleNode(), new IdleAction(), RIGHT_TREE_NODE);
+	dynamic_cast<ActionNode*>(idleNode)->setAgent(this);
+	m_tree->getTree().push_back(idleNode);
+
+	m_tree->setLOSNode(new LOSCondition());
+	m_tree->addNode(m_tree->getIdleNode(), m_tree->getLOSNode(), LEFT_TREE_NODE);
+	m_tree->getTree().push_back(m_tree->getLOSNode());
+
+
+	m_tree->setRadiusNode(new RadiusCondition());
+	m_tree->addNode(m_tree->getLOSNode(), m_tree->getRadiusNode(), LEFT_TREE_NODE);
+	m_tree->getTree().push_back(m_tree->getRadiusNode());
+
+	TreeNode* patrolNode = m_tree->addNode(m_tree->getRadiusNode(), new PatrolAction(), LEFT_TREE_NODE);
+	dynamic_cast<ActionNode*>(patrolNode)->setAgent(this);
+	m_tree->getTree().push_back(patrolNode);
+
+	TreeNode* moveToLOSNode = m_tree->addNode(m_tree->getRadiusNode(), new MoveToLOSAction(), RIGHT_TREE_NODE);
+	dynamic_cast<ActionNode*>(moveToLOSNode)->setAgent(this);
+	m_tree->getTree().push_back(moveToLOSNode);
+
+
+	m_tree->setCloseCombatNode(new CloseCombatCondition());
+	m_tree->addNode(m_tree->getLOSNode(), m_tree->getCloseCombatNode(), RIGHT_TREE_NODE);
+	m_tree->getTree().push_back(m_tree->getCloseCombatNode());
+
+	TreeNode* moveToPlayerNode = m_tree->addNode(m_tree->getCloseCombatNode(), new MoveToPlayerAction(), LEFT_TREE_NODE);
+	dynamic_cast<ActionNode*>(moveToPlayerNode)->setAgent(this);
+	m_tree->getTree().push_back(moveToPlayerNode);
+
+	TreeNode* attackNode = m_tree->addNode(m_tree->getCloseCombatNode(), new AttackAction(), RIGHT_TREE_NODE);
+	dynamic_cast<ActionNode*>(attackNode)->setAgent(this);
+	m_tree->getTree().push_back(attackNode);
 }
