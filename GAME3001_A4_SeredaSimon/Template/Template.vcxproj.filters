@@ -225,6 +225,9 @@
     <ClCompile Include="..\src\FleeAction.cpp">
       <Filter>Decisions\Actions</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\DestructibleObstacle.cpp">
+      <Filter>Game Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\StartScene.h">
@@ -463,6 +466,9 @@
     </ClInclude>
     <ClInclude Include="..\src\FleeAction.h">
       <Filter>Decisions\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\DestructibleObstacle.h">
+      <Filter>Game Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

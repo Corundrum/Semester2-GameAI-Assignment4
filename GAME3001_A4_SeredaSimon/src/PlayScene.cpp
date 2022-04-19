@@ -72,7 +72,21 @@ void PlayScene::update()
 {
 	updateDisplayList();
 	
+	//Enemy Spawn Condition
+	for (unsigned i = 0; i < BaseEnemy::s_EnemiesObj.size(); i++)
+	{
+		if (BaseEnemy::s_EnemiesObj[i]->getTransform()->position.x < 0 || BaseEnemy::s_EnemiesObj[i]->getTransform()->position.x > 800 || BaseEnemy::s_EnemiesObj[i]->getTransform()->position.y < 0 || BaseEnemy::s_EnemiesObj[i]->getTransform()->position.y > 600)
+		{
+			delete BaseEnemy::s_EnemiesObj[i];
+			BaseEnemy::s_EnemiesObj[i] = nullptr;
+			BaseEnemy::s_EnemiesObj.erase(BaseEnemy::s_EnemiesObj.begin() + i);
+			BaseEnemy::s_EnemiesObj.shrink_to_fit();
 
+			BaseEnemy::s_EnemiesObj.push_back(new CloseCombatEnemy());
+			BaseEnemy::s_EnemiesObj.back()->getTransform()->position = glm::vec2(750, 100);
+
+		}
+	}
 
 	for (auto const& i : m_tiles)
 	{
@@ -118,6 +132,18 @@ void PlayScene::update()
 			BaseEnemy::s_EnemiesObj.erase(BaseEnemy::s_EnemiesObj.begin() + i);
 			BaseEnemy::s_EnemiesObj.shrink_to_fit();
 			break;
+		}
+	}
+
+	//destructible obstacle
+	for (unsigned i = 0; i < m_pDObstacles.size(); i++)
+	{
+		if (m_pDObstacles[i]->health <= 0)
+		{
+			removeChild(m_pDObstacles[i]);
+			m_pDObstacles[i] = nullptr;
+			m_pDObstacles.erase(m_pDObstacles.begin() + i);
+			m_pDObstacles.shrink_to_fit();
 		}
 	}
 
@@ -277,6 +303,11 @@ void PlayScene::update()
 		
 		}
 	}
+
+	if (BaseEnemy::s_EnemiesObj.size() == 0)
+	{
+		Game::Instance().changeSceneState(END_SCENE);
+	}
 }
 
 TileObject* PlayScene::GetGo(const std::string& s)
@@ -342,15 +373,15 @@ void PlayScene::start()
 	m_tiles.push_back(std::pair<std::string, TileObject*>("ground", new TiledLevel(25, 34, 24, 24, "../Assets/tiles/TileData.txt", "../Assets/tiles/ForestLayer1.txt", "woodsTiles")));
 	m_tiles.push_back(std::pair<std::string, TileObject*>("objects", new TiledLevel(25, 34, 24, 24, "../Assets/tiles/TileData.txt", "../Assets/tiles/ForestLayer2.txt", "woodsTiles")));
 
-	BaseEnemy::s_EnemiesObj.push_back(new RangedCombatEnemy());
-	BaseEnemy::s_EnemiesObj.back()->getTransform()->position = glm::vec2(720, 40);
+	//BaseEnemy::s_EnemiesObj.push_back(new RangedCombatEnemy());
+	//BaseEnemy::s_EnemiesObj.back()->getTransform()->position = glm::vec2(720, 40);
 	//addChild(BaseEnemy::s_EnemiesObj.back());
 
-	BaseEnemy::s_EnemiesObj.push_back(new RangedCombatEnemy());
-	BaseEnemy::s_EnemiesObj.back()->getTransform()->position = glm::vec2(620, 500);
+	//BaseEnemy::s_EnemiesObj.push_back(new RangedCombatEnemy());
+	//BaseEnemy::s_EnemiesObj.back()->getTransform()->position = glm::vec2(620, 500);
 	//addChild(BaseEnemy::s_EnemiesObj.back());
 
-	BaseEnemy::s_EnemiesObj.push_back(new RangedCombatEnemy());
+	BaseEnemy::s_EnemiesObj.push_back(new CloseCombatEnemy());
 	BaseEnemy::s_EnemiesObj.back()->getTransform()->position = glm::vec2(100, 200);
 	//addChild(BaseEnemy::s_EnemiesObj.back());
 
@@ -374,6 +405,11 @@ void PlayScene::start()
 	m_pObstacles.push_back(new Obstacle());
 	m_pObstacles.back()->getTransform()->position = glm::vec2(380, 220);
 	addChild(m_pObstacles.back(), 2);
+
+	m_pDObstacles.push_back(new DestructibleObstacle());
+	m_pDObstacles.back()->getTransform()->position = glm::vec2(500, 500);
+	addChild(m_pDObstacles.back(), 2);
+
 
 	m_LOSMode = 0;
 	m_obstacleBuffer = 0;

@@ -8,6 +8,7 @@
 #include "Target.h"
 #include "PathNode.h"
 #include "Obstacle.h"
+#include "DestructibleObstacle.h"
 #include "Label.h"
 
 #include "Tile.h"
@@ -41,6 +42,7 @@ private:
 	bool m_isGridEnabled;
 	
 	std::vector<Obstacle*> m_pObstacles;
+	std::vector<DestructibleObstacle*> m_pDObstacles;
 
 	//path node objects and functions
 	
