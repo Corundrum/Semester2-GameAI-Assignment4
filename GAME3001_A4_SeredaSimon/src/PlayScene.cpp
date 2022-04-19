@@ -9,6 +9,7 @@
 #include "imgui_sdl.h"
 #include "Renderer.h"
 #include "Util.h"
+#include "Bullet.h"
 
 PlayScene::PlayScene()
 {
@@ -29,6 +30,11 @@ void PlayScene::draw()
 	for (auto enemy : BaseEnemy::s_EnemiesObj)
 	{
 		enemy->draw();
+	}
+
+	for (auto bullet : Bullet::s_pBullets)
+	{
+		bullet->draw();
 	}
 
 	//black bar at top
@@ -72,6 +78,9 @@ void PlayScene::update()
 	{
 		i.second->update();
 	}
+
+	//bullets on screen
+	Bullet::updateField();
 
 	//LOS Checks for Enemies to player
 	for (auto enemy : BaseEnemy::s_EnemiesObj)

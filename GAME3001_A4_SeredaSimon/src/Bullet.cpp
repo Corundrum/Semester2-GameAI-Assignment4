@@ -1,8 +1,11 @@
 #include "Bullet.h"
+#include "BaseEnemy.h"
 #include "TextureManager.h"
+#include "CollisionManager.h"
+#include "Player.h"
 
 
-Bullet::Bullet()
+Bullet::Bullet(bool dam)
 {
 	TextureManager::Instance().load("../Assets/textures/CannonBall.png", "bullet");
 
@@ -10,6 +13,7 @@ Bullet::Bullet()
 	setHeight(12);
 
 	setType(TARGET);
+	damagePlayer = dam;
 }
 
 Bullet::~Bullet()
@@ -27,8 +31,39 @@ void Bullet::draw()
 
 void Bullet::update()
 {
+}
 
-	m_move();
+void Bullet::updateField()
+{
+	for (unsigned i = 0; i < s_pBullets.size(); i++)
+	{
+		s_pBullets[i]->m_move();
+		if (!s_pBullets[i]->damagePlayer)
+		{
+			for (auto enemy : BaseEnemy::s_EnemiesObj)
+			{
+				if (CollisionManager::AABBCheck(s_pBullets[i], &enemy->getHitBox()))
+				{
+					enemy->takeDamage();
+					s_pBullets[i] = nullptr;
+					s_pBullets.erase(s_pBullets.begin() + i);
+					s_pBullets.shrink_to_fit();
+					break;
+				}
+			}
+		}
+		else
+		{
+			if (CollisionManager::AABBCheck(s_pBullets[i], &Player::s_pPlayerObj->getHitBox()))
+			{
+				Player::s_pPlayerObj->takeDamage(20);
+				s_pBullets[i] = nullptr;
+				s_pBullets.erase(s_pBullets.begin() + i);
+				s_pBullets.shrink_to_fit();
+				break;
+			}
+		}
+	}
 }
 
 void Bullet::clean()
@@ -40,4 +75,4 @@ void Bullet::m_move()
 	getTransform()->position = getTransform()->position + getRigidBody()->velocity * 5.0f;
 }
 
-
+std::vector<Bullet*> Bullet::s_pBullets;

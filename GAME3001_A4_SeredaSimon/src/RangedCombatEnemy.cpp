@@ -182,15 +182,18 @@ void RangedCombatEnemy::draw()
 		if (!isFacingLeft)
 		{
 			TextureManager::Instance().playAnimation("slugRSpriteSheet", getAnimation("attack"),
-				x, y, 0.26f, 0, 255, this, true);
+				x, y, 0.12f, 0, 255, this, true);
 		}
 		else
 		{
 			TextureManager::Instance().playAnimation("slugRSpriteSheet", getAnimation("attack"),
-				x, y, 0.26f, 0, 255, this, true, SDL_FLIP_HORIZONTAL);
+				x, y, 0.12f, 0, 255, this, true, SDL_FLIP_HORIZONTAL);
 		}
 		if (getAnimation("attack").current_frame == 5)
 		{
+			Bullet::s_pBullets.push_back(new Bullet(true));
+			Bullet::s_pBullets.back()->getTransform()->position = glm::vec2(hitBox.x + hitBox.w * 0.5, hitBox.y + hitBox.h * 0.5);
+			Bullet::s_pBullets.back()->getRigidBody()->velocity = (Util::normalize(glm::vec2(Player::s_pPlayerObj->getTransform()->position.x, Player::s_pPlayerObj->getTransform()->position.y + 32) - glm::vec2(hitBox.x + hitBox.w * 0.5, hitBox.y + hitBox.h * 0.5)));
 
 
 			getAnimation("attack").current_frame = 0;
