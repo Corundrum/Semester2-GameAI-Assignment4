@@ -333,15 +333,15 @@ void PlayScene::start()
 	m_tiles.push_back(std::pair<std::string, TileObject*>("ground", new TiledLevel(25, 34, 24, 24, "../Assets/tiles/TileData.txt", "../Assets/tiles/ForestLayer1.txt", "woodsTiles")));
 	m_tiles.push_back(std::pair<std::string, TileObject*>("objects", new TiledLevel(25, 34, 24, 24, "../Assets/tiles/TileData.txt", "../Assets/tiles/ForestLayer2.txt", "woodsTiles")));
 
-	BaseEnemy::s_EnemiesObj.push_back(new CloseCombatEnemy());
+	BaseEnemy::s_EnemiesObj.push_back(new RangedCombatEnemy());
 	BaseEnemy::s_EnemiesObj.back()->getTransform()->position = glm::vec2(720, 40);
 	//addChild(BaseEnemy::s_EnemiesObj.back());
 
-	BaseEnemy::s_EnemiesObj.push_back(new CloseCombatEnemy());
+	BaseEnemy::s_EnemiesObj.push_back(new RangedCombatEnemy());
 	BaseEnemy::s_EnemiesObj.back()->getTransform()->position = glm::vec2(620, 500);
 	//addChild(BaseEnemy::s_EnemiesObj.back());
 
-	BaseEnemy::s_EnemiesObj.push_back(new CloseCombatEnemy());
+	BaseEnemy::s_EnemiesObj.push_back(new RangedCombatEnemy());
 	BaseEnemy::s_EnemiesObj.back()->getTransform()->position = glm::vec2(100, 200);
 	//addChild(BaseEnemy::s_EnemiesObj.back());
 

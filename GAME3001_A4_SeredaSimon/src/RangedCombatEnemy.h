@@ -16,8 +16,23 @@ public:
 	virtual void update() override;
 	virtual void clean() override;
 	
+	void idle() override;
+	void death() override;
+	void takeDamage() override;
+	void patrol() override;
+	void moveToRange() override;
+	void moveToLOS() override;
+	void attack() override;
+	void flee() override;
 
 private:
+
+	float walkTimer = 1;
+
+	void m_buildAnimations();
+	bool isFacingLeft = 0;
+
+	void m_buildTree();
 
 };
 
