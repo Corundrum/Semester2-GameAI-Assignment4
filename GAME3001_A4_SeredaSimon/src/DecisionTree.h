@@ -9,6 +9,7 @@
 #include "IdleCondition.h"
 #include "DeathCondition.h"
 #include "TakeDamageCondition.h"
+#include "EnemyHealthCondition.h"
 #include "TreeNode.h"
 #include "TreeNodeType.h"
 
@@ -28,6 +29,7 @@ public:
 
 	IdleCondition* getIdleNode() const;
 	DeathCondition* getDeathNode() const;
+	EnemyHealthCondition* getHealthyNode() const;
 	TakeDamageCondition* getTakeDamageNode() const;
 	LOSCondition* getLOSNode() const;
 	RadiusCondition* getRadiusNode() const;
@@ -37,6 +39,7 @@ public:
 
 	void setIdleNode(IdleCondition* node);
 	void setDeathNode(DeathCondition* node);
+	void setHealthyNode(EnemyHealthCondition* node);
 	void setTakeDamageNode(TakeDamageCondition* node);
 	void setLOSNode(LOSCondition* node);
 	void setRadiusNode(RadiusCondition* node);
@@ -57,6 +60,7 @@ private:
 
 	IdleCondition* m_idleNode;
 	DeathCondition* m_deathNode;
+	EnemyHealthCondition* m_healthyNode;
 	TakeDamageCondition* m_takeDamageNode;
 	LOSCondition* m_LOSNode;
 	RadiusCondition* m_RadiusNode;

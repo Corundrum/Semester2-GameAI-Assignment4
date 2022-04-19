@@ -219,6 +219,12 @@
     <ClCompile Include="..\src\TakeDamageAction.cpp">
       <Filter>Decisions\Actions</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\EnemyHealthCondition.cpp">
+      <Filter>Decisions\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\FleeAction.cpp">
+      <Filter>Decisions\Actions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\StartScene.h">
@@ -450,6 +456,12 @@
       <Filter>Decisions\Conditions</Filter>
     </ClInclude>
     <ClInclude Include="..\src\TakeDamageAction.h">
+      <Filter>Decisions\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\EnemyHealthCondition.h">
+      <Filter>Decisions\Conditions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\FleeAction.h">
       <Filter>Decisions\Actions</Filter>
     </ClInclude>
   </ItemGroup>

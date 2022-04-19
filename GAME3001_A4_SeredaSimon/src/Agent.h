@@ -64,6 +64,7 @@ public:
 	virtual void idle() {}
 	virtual void death() {}
 	virtual void takeDamage() {}
+	virtual void flee() {}
 
 	//New Utilty
 

@@ -37,6 +37,7 @@ public:
 
 	// public functions
 	void Seek();
+	void Flee();
 	void LookWhereYoureGoing(glm::vec2 target_direction);
 
 	PathNode* findNextNode();
@@ -64,7 +65,7 @@ protected:
 	glm::vec2 m_desiredVelocity;
 
 	// private functions
-	void m_move();
+	void m_move(bool flee);
 
 	//decision Tree
 	DecisionTree* m_tree;

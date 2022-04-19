@@ -173,6 +173,8 @@
     <ClCompile Include="..\src\DeathAction.cpp" />
     <ClCompile Include="..\src\DeathCondition.cpp" />
     <ClCompile Include="..\src\DecisionTree.cpp" />
+    <ClCompile Include="..\src\EnemyHealthCondition.cpp" />
+    <ClCompile Include="..\src\FleeAction.cpp" />
     <ClCompile Include="..\src\IdleAction.cpp" />
     <ClCompile Include="..\src\IdleCondition.cpp" />
     <ClCompile Include="..\src\ImGuiWindowFrame.cpp" />
@@ -240,6 +242,8 @@
     <ClInclude Include="..\src\DeathCondition.h" />
     <ClInclude Include="..\src\DecisionTree.h" />
     <ClInclude Include="..\src\EnemyAnimationState.h" />
+    <ClInclude Include="..\src\EnemyHealthCondition.h" />
+    <ClInclude Include="..\src\FleeAction.h" />
     <ClInclude Include="..\src\Heuristic.h" />
     <ClInclude Include="..\src\IdleAction.h" />
     <ClInclude Include="..\src\IdleCondition.h" />

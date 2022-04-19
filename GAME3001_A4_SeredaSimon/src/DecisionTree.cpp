@@ -39,6 +39,11 @@ DeathCondition* DecisionTree::getDeathNode() const
 	return m_deathNode;
 }
 
+EnemyHealthCondition* DecisionTree::getHealthyNode() const
+{
+	return m_healthyNode;
+}
+
 TakeDamageCondition* DecisionTree::getTakeDamageNode() const
 {
 	return m_takeDamageNode;
@@ -72,6 +77,11 @@ void DecisionTree::setIdleNode(IdleCondition* node)
 void DecisionTree::setDeathNode(DeathCondition* node)
 {
 	m_deathNode = node;
+}
+
+void DecisionTree::setHealthyNode(EnemyHealthCondition* node)
+{
+	m_healthyNode = node;
 }
 
 void DecisionTree::setTakeDamageNode(TakeDamageCondition* node)
@@ -133,6 +143,7 @@ void DecisionTree::clean()
 	//wrangle remaining pointers
 	m_idleNode = nullptr;
 	m_deathNode = nullptr;
+	m_healthyNode = nullptr;
 	m_takeDamageNode = nullptr;
 	m_LOSNode = nullptr;
 	m_RadiusNode = nullptr;

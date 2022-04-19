@@ -25,6 +25,7 @@ public:
 	void moveToPlayer() override;
 	void attack() override;
 	void moveToLOS() override;
+	void flee() override;
 private:
 
 	float walkTimer = 1;

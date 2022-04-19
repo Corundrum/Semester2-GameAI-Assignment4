@@ -12,6 +12,7 @@
 #include "IdleAction.h"
 #include "DeathAction.h"
 #include "TakeDamageAction.h"
+#include "FleeAction.h"
 
 #include "Sprite.h"
 #include "Player.h"
@@ -71,6 +72,8 @@ CloseCombatEnemy::CloseCombatEnemy()
 	m_tree = new DecisionTree(this); // overloaded constructor
 	m_buildTree();
 	m_tree->display();
+
+	m_tree->getHealthyNode()->setHealth(true);
 
 	m_buildAnimations();
 }
@@ -161,6 +164,18 @@ void CloseCombatEnemy::draw()
 		{
 			TextureManager::Instance().playAnimation("slugSpriteSheet", getAnimation("patrol"),
 				x, y, 0.12f, 0, 255, this, true, SDL_FLIP_HORIZONTAL);
+		}
+		break;
+	case FLEE:
+		if (!isFacingLeft)
+		{
+			TextureManager::Instance().playAnimation("slugSpriteSheet", getAnimation("patrol"),
+				x, y, 0.34f, 0, 255, this, true);
+		}
+		else
+		{
+			TextureManager::Instance().playAnimation("slugSpriteSheet", getAnimation("patrol"),
+				x, y, 0.34f, 0, 255, this, true, SDL_FLIP_HORIZONTAL);
 		}
 		break;
 	case ATTACK:
@@ -283,6 +298,10 @@ void CloseCombatEnemy::update()
 			}
 		}
 
+		if (m_health < 3)
+		{
+			m_tree->getHealthyNode()->setHealth(false);
+		}
 
 		//set dead
 		if (getHealth() <= 0)
@@ -361,7 +380,7 @@ void CloseCombatEnemy::patrol()
 		//initialize the action
 		setActionState(PATROL);
 	}
-	m_move();
+	m_move(false);
 }
 
 void CloseCombatEnemy::moveToPlayer()
@@ -372,7 +391,7 @@ void CloseCombatEnemy::moveToPlayer()
 		setActionState(MOVE_TO_PLAYER);
 	}
 	setTargetPosition(Player::s_pPlayerObj->getTransform()->position);
-	m_move();
+	m_move(false);
 }
 
 void CloseCombatEnemy::attack()
@@ -392,8 +411,19 @@ void CloseCombatEnemy::moveToLOS()
 		setActionState(MOVE_TO_LOS);
 	}
 	setTargetPosition(findNextNode()->getTransform()->position);
-	m_move();
+	m_move(false);
 
+}
+
+void CloseCombatEnemy::flee()
+{
+	if (getActionState() != FLEE)
+	{
+		//initialize the action
+		setActionState(FLEE);
+	}
+	setTargetPosition(Player::s_pPlayerObj->getTransform()->position);
+	m_move(true);
 }
 
 void CloseCombatEnemy::m_buildAnimations()
@@ -452,8 +482,17 @@ void CloseCombatEnemy::m_buildTree()
 	dynamic_cast<ActionNode*>(deathNode)->setAgent(this);
 	m_tree->getTree().push_back(deathNode);
 
+
+	m_tree->setHealthyNode(new EnemyHealthCondition());
+	m_tree->addNode(m_tree->getDeathNode(), m_tree->getHealthyNode(), LEFT_TREE_NODE);
+	m_tree->getTree().push_back(m_tree->getHealthyNode());
+
+	TreeNode* fleeNode = m_tree->addNode(m_tree->getHealthyNode(), new FleeAction(), LEFT_TREE_NODE);
+	dynamic_cast<ActionNode*>(fleeNode)->setAgent(this);
+	m_tree->getTree().push_back(fleeNode);
+
 	m_tree->setTakeDamageNode(new TakeDamageCondition());
-	m_tree->addNode(m_tree->getDeathNode(), m_tree->getTakeDamageNode(), LEFT_TREE_NODE);
+	m_tree->addNode(m_tree->getHealthyNode(), m_tree->getTakeDamageNode(), RIGHT_TREE_NODE);
 	m_tree->getTree().push_back(m_tree->getTakeDamageNode());
 
 

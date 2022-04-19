@@ -11,6 +11,7 @@ enum ActionState
 	IDLE,
 	DEATH,
 	TAKE_DAMAGE,
+	FLEE,
 	PATROL
 };
 #endif /* defined (__ACTION_STATE__)*/

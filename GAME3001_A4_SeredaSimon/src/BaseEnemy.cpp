@@ -91,6 +91,25 @@ void BaseEnemy::Seek()
 	getRigidBody()->acceleration = getCurrentDirection() * getAccelerationRate();
 }
 
+void BaseEnemy::Flee()
+{
+	// Find next waypoint:
+	if (Util::distance(m_patrol[m_waypoint], getTransform()->position) < 10)
+	{
+		//if moved to last waypoint go back to beginning
+		if (++m_waypoint == m_patrol.size())
+		{
+			m_waypoint = 0;
+		}
+		setTargetPosition(m_patrol[m_waypoint]);
+	}
+
+	setDesiredVelocity(getTargetPosition());
+	const glm::vec2 steering_direction = getDesiredVelocity() - getCurrentDirection();
+	LookWhereYoureGoing(steering_direction);
+	getRigidBody()->acceleration = -getCurrentDirection() * getAccelerationRate();
+}
+
 void BaseEnemy::LookWhereYoureGoing(const glm::vec2 target_direction)
 {
 	float target_rotation = Util::signedAngle(getCurrentDirection(), target_direction) - 90;
@@ -157,9 +176,16 @@ const DecisionTree* BaseEnemy::getTree()
 	return m_tree;
 }
 
-void BaseEnemy::m_move()
+void BaseEnemy::m_move(bool flee)
 {
-	Seek();
+	if (flee)
+	{
+		Flee();
+	}
+	else
+	{
+		Seek();
+	}
 
 	//                                   final Position     position term    velocity term     acceleration term
 	// kinematic equation for motion --> Pf            =      Pi     +     Vi*(time)    +   (0.5)*Ai*(time * time)
