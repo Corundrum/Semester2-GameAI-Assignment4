@@ -31,6 +31,7 @@ Player::Player(): m_currentAnimationState(PLAYER_IDLE)
 	getRigidBody()->isColliding = false;
 	setType(PLAYER);
 
+	health = healthMax;
 	hitBox = { (int)getTransform()->position.x - getWidth() / 2 + 5, (int)getTransform()->position.y, getWidth() / 2 - 10, getHeight() / 2 };
 
 	m_buildAnimations();

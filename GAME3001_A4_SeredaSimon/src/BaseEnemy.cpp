@@ -4,6 +4,7 @@
 #include "TextureManager.h"
 #include "EventManager.h"
 #include "Util.h"
+#include "PlayScene.h"
 
 #include "AttackAction.h"
 #include "MoveToLOSAction.h"
@@ -117,6 +118,38 @@ void BaseEnemy::LookWhereYoureGoing(const glm::vec2 target_direction)
 	}
 
 	updateWhiskers(getWhiskerAngle());
+}
+
+PathNode* BaseEnemy::findNextNode()
+{
+	std::vector<PathNode*> closest_points;
+	PathNode* next_tile = nullptr;
+
+	for (unsigned i = 0; i < PlayScene::m_pGrid.size(); i++)
+	{
+		auto distance = Util::distance(this->getTransform()->position, PlayScene::m_pGrid[i]->getTransform()->position);
+		if (distance <= 60 && distance > 20)
+		{
+			closest_points.push_back(PlayScene::m_pGrid[i]);
+		}
+	}
+
+	for (unsigned i = 0; i < closest_points.size(); i++)
+	{
+		if (next_tile == nullptr)
+		{
+			next_tile = closest_points[i];
+		}
+		else
+		{
+			if (Util::distance(closest_points[i]->getTransform()->position, Player::s_pPlayerObj->getTransform()->position) < Util::distance(next_tile->getTransform()->position, Player::s_pPlayerObj->getTransform()->position))
+			{
+				next_tile = closest_points[i];
+			}
+		}
+	}
+
+	return next_tile;
 }
 
 const DecisionTree* BaseEnemy::getTree()

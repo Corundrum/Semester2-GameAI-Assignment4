@@ -20,6 +20,7 @@ PlayScene::~PlayScene()
 
 void PlayScene::draw()
 {
+	//tile map
 	for (auto const& i : m_tiles)
 	{
 		i.second->draw();
@@ -30,12 +31,12 @@ void PlayScene::draw()
 		enemy->draw();
 	}
 
+	//black bar at top
 	Util::DrawFilledRect(glm::vec2(0, 0), 800, 50, glm::vec4(0, 0, 0, 1));
 
 	drawDisplayList();
-
-	float health_percent = playerHealth / 100.0;
-
+	//health bar
+	float health_percent = (float)Player::s_pPlayerObj->getHealth() / Player::s_pPlayerObj->getMaxHealth();
 	Util::DrawRect(glm::vec2(15, 13), 202, 26, glm::vec4(1, 1, 1, 1));
 	Util::DrawFilledRect(glm::vec2(16, 14), 200, 24, glm::vec4(0,0,0,1));
 	if (health_percent > 0)
@@ -43,12 +44,13 @@ void PlayScene::draw()
 		Util::DrawFilledRect(glm::vec2(16, 14), 200 * health_percent, 24, glm::vec4(1, 0.2, 0.2, 1));
 	}
 
-	
+	//score
 	std::stringstream stream;
 	stream << std::fixed << std::setprecision(1) << "Score: " << Player::s_pPlayerObj->getScore();
 	const std::string total_score = stream.str();
 	m_score->setText(total_score);
 	
+	//draw hitboxes
 	if (m_isGridEnabled)
 	{
 		Util::DrawRect(glm::vec2(Player::s_pPlayerObj->getHitBox().x, Player::s_pPlayerObj->getHitBox().y), Player::s_pPlayerObj->getHitBox().w, Player::s_pPlayerObj->getHitBox().h, glm::vec4(1, 0, 0, 1));
@@ -79,7 +81,6 @@ void PlayScene::update()
 	}
 
 	//Node Checks from enemies
-
 	auto delta_time = Game::Instance().getDeltaTime();
 	static float check_nodes = 0;
 	if (check_nodes >= 0.66)
@@ -113,14 +114,6 @@ void PlayScene::update()
 
 
 	//ALL COLLISION
-
-	for (auto enemy : BaseEnemy::s_EnemiesObj)
-	{
-		if (SDL_HasIntersection(&enemy->getHitBox(), &Player::s_pPlayerObj->getHitBox()))
-		{
-			playerHealth -= 1;
-		}
-	}
 
 	for (auto obstacle : m_pObstacles)
 	{
@@ -291,6 +284,7 @@ TileObject* PlayScene::GetGo(const std::string& s)
 	}
 	else return nullptr;
 }
+
 
 void PlayScene::clean()
 {
@@ -540,3 +534,4 @@ void PlayScene::GUI_Function()
 
 Player* Player::s_pPlayerObj;
 std::vector<BaseEnemy*> BaseEnemy::s_EnemiesObj;
+std::vector<PathNode*> PlayScene::m_pGrid;

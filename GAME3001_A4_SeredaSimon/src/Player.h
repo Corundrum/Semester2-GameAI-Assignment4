@@ -27,6 +27,10 @@ public:
 
 	SDL_Rect getHitBox() { return hitBox; }
 
+	int getHealth() { return health; }
+	int getMaxHealth() { return healthMax; }
+	void takeDamage(int num) { health -= num; }
+
 	// setters
 	void setAnimationState(PlayerAnimationState new_state);
 
@@ -41,6 +45,9 @@ private:
 
 	bool mouseLeft;
 	bool mouseRight;
+
+	int health;
+	int healthMax = 100;
 
 	float walkTimer = 1;
 

@@ -139,6 +139,18 @@ void CloseCombatEnemy::draw()
 				x, y, 0.12f, 0, 255, this, true, SDL_FLIP_HORIZONTAL);
 		}
 		break;
+	case MOVE_TO_LOS:
+		if (!isFacingLeft)
+		{
+			TextureManager::Instance().playAnimation("slugSpriteSheet", getAnimation("MoveToPlayer"),
+				x, y, 0.12f, 0, 255, this, true);
+		}
+		else
+		{
+			TextureManager::Instance().playAnimation("slugSpriteSheet", getAnimation("MoveToPlayer"),
+				x, y, 0.12f, 0, 255, this, true, SDL_FLIP_HORIZONTAL);
+		}
+		break;
 	case PATROL:
 		if (!isFacingLeft)
 		{
@@ -164,6 +176,13 @@ void CloseCombatEnemy::draw()
 		}
 		if (getAnimation("attack").current_frame == 5)
 		{
+			SDL_Rect AttackHitBox = { hitBox.x - 24, hitBox.y - 24, 84, 64 };
+			if (SDL_HasIntersection(&AttackHitBox, &Player::s_pPlayerObj->getHitBox()))
+			{
+				Player::s_pPlayerObj->takeDamage(10);
+			}
+
+
 			getAnimation("attack").current_frame = 0;
 			setActionState(NO_ACTION);
 		}
@@ -171,7 +190,6 @@ void CloseCombatEnemy::draw()
 	default:
 		break;
 	}
-
 	glm::vec4 blue = glm::vec4(0, 0, 1, 1);
 	glm::vec4 green = glm::vec4(0, 1, 0, 1);
 	glm::vec4 circleColour;
@@ -373,6 +391,8 @@ void CloseCombatEnemy::moveToLOS()
 		//initialize the action
 		setActionState(MOVE_TO_LOS);
 	}
+	setTargetPosition(findNextNode()->getTransform()->position);
+	m_move();
 
 }
 

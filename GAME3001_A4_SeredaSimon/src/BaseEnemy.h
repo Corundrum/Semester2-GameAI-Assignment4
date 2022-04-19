@@ -4,6 +4,7 @@
 
 #include "Agent.h"
 #include "DecisionTree.h"
+#include "PathNode.h"
 
 class BaseEnemy : public Agent
 {
@@ -37,6 +38,8 @@ public:
 	// public functions
 	void Seek();
 	void LookWhereYoureGoing(glm::vec2 target_direction);
+
+	PathNode* findNextNode();
 
 	//new action functions
 	SDL_Rect getHitBox() { return hitBox; }

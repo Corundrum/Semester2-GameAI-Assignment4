@@ -28,6 +28,9 @@ public:
 	virtual void clean() override;
 	virtual void handleEvents() override;
 	virtual void start() override;
+
+	static std::vector<PathNode*> m_pGrid;
+
 private:
 	// IMGUI Function
 	void GUI_Function();
@@ -40,7 +43,7 @@ private:
 	std::vector<Obstacle*> m_pObstacles;
 
 	//path node objects and functions
-	std::vector<PathNode*> m_pGrid;
+	
 	void m_buildGrid();
 	void m_toggleGrid(bool state);
 	
@@ -52,7 +55,6 @@ private:
 
 	TileObject* GetGo(const std::string& s);
 
-	int playerHealth = 100;
 
 	int m_LOSMode;
 	int m_obstacleBuffer;
